@@ -26,3 +26,6 @@ local.properties
 
 # ===== Node ====
 node_modules/
+
+# textmate
+*.tmproj
