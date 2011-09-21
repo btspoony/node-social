@@ -3,7 +3,7 @@ This is general SNS Client libs for most SNS platforms. Including:
 
 * Weibo (OAuth, implemented)
 * Weiyouxi (Old style FB like, in-frame only, implemented)
-* RenRen (OAuth2, code implemented, no tested)
+* RenRen (OAuth2, implemented)
 * Facebook (not implement yet)
 * QQ Pengyou (not implement yet)
 * QZone (not implement yet)
