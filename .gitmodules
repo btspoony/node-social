@@ -1,0 +1,3 @@
+[submodule "support/oauth"]
+	path = support/oauth
+	url = git://github.com/btspoony/node-oauth.git
