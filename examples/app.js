@@ -71,7 +71,8 @@ app.get('/', queryAuth, function(req, res){
 		client;
 	// Render IndexPage Function
 	function renderPage (error, data) {
-		var txt = 'SNS Client! <br /><br /><br />'+ JSON.stringify(req.session);
+		if(!req.session.userdata) req.session.userdata = data;
+		var txt = 'SNS Client! <br /><br /><br />'+ JSON.stringify(req.session.userdata);
 		if(error)	{
 			console.log(error);
 			txt = JSON.stringify(error);
@@ -83,9 +84,9 @@ app.get('/', queryAuth, function(req, res){
 	var user = session.authorized_user;
 	if (user && ( !user.expire || user.expire > now) ) {
 		var type = user.platform;
-		if(!session.accountInfo){
+		if(!session.userdata){
 			var client = snsclient.createClient(type,appInfos[type], user);
-			client.getAccountInfo(req.session, renderPage);
+			client.friends_ids(null, renderPage);
 		}else{
 			renderPage();
 		}
