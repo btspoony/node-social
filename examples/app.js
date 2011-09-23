@@ -47,53 +47,61 @@ var appInfos = {
 snsclient.setDefaultAppinfo(appInfos.sina);
 
 /**
- * Query Authorize middleware
+ * Query middleware
  */
-function queryAuth(req, res, next){
-	if(req.session.authorized_user) return next();
-	
-	// try check platform
-	var type = snsclient.getTypeByQuery(req.query);
-	if(type != ""){
-		client = snsclient.createClient(type, appInfos[type]);
+function queryCheck(req, res, next){
+	var user = req.session.authorized_user;
+	if(user && (!user.expire || user.expire > (new Date()).getTime() )){
+		next('route');
 	}else{
-		client = snsclient.createClient(type); // using default
+		// try check platform
+		var info = snsclient.getInfoFromQuery(req.query);
+		if(info.type){
+			req.session.platform = info;
+		}
+		next();
+	}	
+};
+
+app.get('/', queryCheck, function(req, res, next){
+	var session = req.session,
+		client;
+		
+	var platform = session.platform;
+	if(platform){
+		client = snsclient.createClient(platform.type, appInfos[platform.type]);
+	}else{
+		client = snsclient.createClient('sina'); // using default
 	}
 	client.authorize(req, res, function(err){
 		if(err) next(new Error(JSON.stringify(err) ));
-		else next();
+		next();
 	});
-}
+});
 
-app.get('/', queryAuth, function(req, res){
-	var session = req.session,
-		now = new Date(),
-		client;
-	// Render IndexPage Function
-	function renderPage (error, data) {
-		if(!req.session.userdata) req.session.userdata = data;
-		var txt = 'SNS Client! <br /><br /><br />'+ JSON.stringify(req.session.userdata);
-		if(error)	{
-			console.log(error);
-			txt = JSON.stringify(error);
-		}
-		
-		res.send(txt);
-	}
+/**
+ * Account Check middleware
+ */
+function dataCheck(req, res, next){
+	if(req.session.userdata) next('route');
+	else next();
+};
+app.get('/', dataCheck, function(req, res, next){
+	var user = req.session.authorized_user;
+	var type = user.platform;
+	var	client = snsclient.createClient(type, appInfos[type], user);
 	
-	var user = session.authorized_user;
-	if (user && ( !user.expire || user.expire > now) ) {
-		var type = user.platform;
-		if(!session.userdata){
-			var client = snsclient.createClient(type,appInfos[type], user);
-			client.friends_ids(null, renderPage);
-		}else{
-			renderPage();
-		}
-	}else{
-		renderPage("no user");
-	}
+	client.friends_ids(null, function(err, data){
+		if(err) next(new Error(JSON.stringify(err) ));
+		req.session.userdata = data;
+		next();
+	});
+});
+
+app.get('/', function(req, res){
+	var txt = 'SNS Client! <br /><br /><br />'+ JSON.stringify(req.session.userdata);
 	
+	res.send(txt);
 });
 
 app.listen(port);

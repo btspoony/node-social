@@ -13,6 +13,6 @@
  *  var client = createClient('wyx', authorized_user); // if set user and using default
  */
 
-exports.getTypeByQuery = require("./lib/clientFactory").getTypeByQuery;
+exports.getInfoFromQuery = require("./lib/clientFactory").getInfoFromQuery;
 exports.createClient = require("./lib/clientFactory").createClient;
 exports.setDefaultAppinfo = require("./lib/clientFactory").setDefaultAppinfo;
