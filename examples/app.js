@@ -73,9 +73,12 @@ app.get('/', queryCheck, function(req, res, next){
 	}else{
 		client = snsclient.createClient('sina'); // using default
 	}
-	client.authorize(req, res, function(err){
+	client.authorize(req, res, function(err, user){
 		if(err) next(new Error(JSON.stringify(err) ));
-		next();
+		else{
+			req.session.authorized_user = user;
+			next();	
+		}
 	});
 });
 
@@ -93,8 +96,10 @@ app.get('/', dataCheck, function(req, res, next){
 	
 	client.friends_ids(null, function(err, data){
 		if(err) next(new Error(JSON.stringify(err) ));
-		req.session.userdata = data;
-		next();
+		else{
+			req.session.userdata = data;
+			next();	
+		}
 	});
 });
 
