@@ -32,14 +32,17 @@ app.configure('production', function(){
 //set sns app info
 var appInfos = {
 	sina:{
+		type: 'sina',
 		key: '{your sina key}',
 		secret: '{your sina secret}',
 	},
 	wyx : {
+		type: 'wyx',
 		key: '{your wyx key}',
 		secret: '{your wyx secret}',
 	},
 	renren : {
+		type: 'renren',
 		key: '{your renren key}',
 		secret: '{your renren secret}',
 	}
@@ -57,7 +60,7 @@ function queryCheck(req, res, next){
 		// try check platform
 		var info = snsclient.getInfoFromQuery(req.query);
 		if(info.type){
-			req.session.platform = info;
+			req.session.queryinfo = info;
 		}
 		next();
 	}	
@@ -67,11 +70,11 @@ app.get('/', queryCheck, function(req, res, next){
 	var session = req.session,
 		client;
 		
-	var platform = session.platform;
-	if(platform){
-		client = snsclient.createClient(platform.type, appInfos[platform.type]);
+	var queryinfo = session.queryinfo;
+	if(queryinfo){
+		client = snsclient.createClient(appInfos[queryinfo.type]);
 	}else{
-		client = snsclient.createClient('sina'); // using default
+		client = snsclient.createClient(); // using default
 	}
 	client.authorize(req, res, function(err, user){
 		if(err) next(new Error(JSON.stringify(err) ));
@@ -92,7 +95,7 @@ function dataCheck(req, res, next){
 app.get('/', dataCheck, function(req, res, next){
 	var user = req.session.authorized_user;
 	var type = user.platform;
-	var	client = snsclient.createClient(type, appInfos[type], user);
+	var	client = snsclient.createClient(appInfos[type], user);
 	
 	client.friends_ids(null, function(err, data){
 		if(err) next(new Error(JSON.stringify(err) ));
