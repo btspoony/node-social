@@ -1,6 +1,6 @@
 {
   "name": "snsclient",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Multi-platform SNS client for node",
   "author": "Tang Bo Hao<btspoony@gmail.com> (http://blog.boisgames.com)",
   "repository": { "type":"git", "url":"git://github.com/btspoony/node-snsclient.git"},
