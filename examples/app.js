@@ -37,18 +37,18 @@ app.configure('production', function(){
 var appInfos = {
 	sina:{
 		type: 'sina',
-		key: '273500697', 
-		secret: 'ed5b6163e40ae7c23bb3fc6e3c262704',
+		key: '{your sina key}',
+		secret: '{your sina secret}',
 	},
 	wyx : {
 		type: 'wyx',
-		key: '4149712685',
-		secret: 'c3e0afbbf0b22c1920e7d84c05721e09',
+		key: '{your wyx key}',
+		secret: '{your wyx secret}',
 	},
 	renren : {
 		type: 'renren',
-		key:  '08abb4597fa546349ea8e2cc2a5bdac4',
-		secret: '70af0efe35064d56b6ceec62650a00ab', 
+		key: '{your renren key}',
+		secret: '{your renren secret}',
 	}
 }
 snsclient.setDefaultAppinfo(appInfos.renren);
