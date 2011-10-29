@@ -13,6 +13,6 @@
  *  var client = createClient('wyx', authorized_user); // if set user and using default
  */
 
-exports.getInfoFromQuery = require("./lib/clientFactory").getInfoFromQuery;
-exports.createClient = require("./lib/clientFactory").createClient;
-exports.setDefaultAppinfo = require("./lib/clientFactory").setDefaultAppinfo;
+exports = module.exports = require("./lib/clientFactory");
+
+exports.middleware = require("./lib/middleware");

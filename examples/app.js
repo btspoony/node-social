@@ -16,6 +16,10 @@ app.configure(function(){
 		secret: 'sns-client_2hhxSfs2fh0asa'
 	}));
   app.use(express.methodOverride());
+
+  // Now middleware available
+  app.use(snsclient.middleware());
+
   app.use(app.router);
 });	
 
@@ -33,35 +37,30 @@ app.configure('production', function(){
 var appInfos = {
 	sina:{
 		type: 'sina',
-		key: '{your sina key}',
-		secret: '{your sina secret}',
+		key: '273500697', 
+		secret: 'ed5b6163e40ae7c23bb3fc6e3c262704',
 	},
 	wyx : {
 		type: 'wyx',
-		key: '{your wyx key}',
-		secret: '{your wyx secret}',
+		key: '4149712685',
+		secret: 'c3e0afbbf0b22c1920e7d84c05721e09',
 	},
 	renren : {
 		type: 'renren',
-		key: '{your renren key}',
-		secret: '{your renren secret}',
+		key:  '08abb4597fa546349ea8e2cc2a5bdac4',
+		secret: '70af0efe35064d56b6ceec62650a00ab', 
 	}
 }
-snsclient.setDefaultAppinfo(appInfos.sina);
+snsclient.setDefaultAppinfo(appInfos.renren);
 
 /**
  * Query middleware
  */
 function queryCheck(req, res, next){
-	var user = req.session.authorized_user;
+	var user = req.session.authorized_data;
 	if(user && (!user.expire || user.expire > (new Date()).getTime() )){
 		next('route');
 	}else{
-		// try check platform
-		var info = snsclient.getInfoFromQuery(req.query);
-		if(info.type){
-			req.session.queryinfo = info;
-		}
 		next();
 	}	
 };
@@ -69,17 +68,16 @@ function queryCheck(req, res, next){
 app.get('/', queryCheck, function(req, res, next){
 	var session = req.session,
 		client;
-		
-	var queryinfo = session.queryinfo;
-	if(queryinfo){
-		client = snsclient.createClient(appInfos[queryinfo.type]);
+	
+	if(req.snsInfo){
+		client = snsclient.createClient(appInfos[req.snsInfo.type]);
 	}else{
 		client = snsclient.createClient(); // using default
 	}
 	client.authorize(req, res, function(err, user){
 		if(err) next(new Error(JSON.stringify(err) ));
 		else{
-			req.session.authorized_user = user;
+			req.session.authorized_data = user;
 			next();	
 		}
 	});
@@ -93,7 +91,7 @@ function dataCheck(req, res, next){
 	else next();
 };
 app.get('/', dataCheck, function(req, res, next){
-	var user = req.session.authorized_user;
+	var user = req.session.authorized_data;
 	var type = user.platform;
 	var	client = snsclient.createClient(appInfos[type], user);
 	
