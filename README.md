@@ -1,20 +1,64 @@
 # Multi-platform SNS Client for Node
-This is general SNS Client libs for most SNS platforms. Including:
+This is general SNS Client libs for most SNS platforms.
+Implemented:
 
-* Weiyouxi (Old style FB like, in-frame only, implemented)
-* RenRen (OAuth2, implemented)
-* Weibo (OAuth, implemented, but lack of sns CommonAPI)
-* Facebook (not implement yet)
-* QZone/Pengyou (not implement yet)
-* Google+ (not implement yet)
-* orkut (not implement yet)
+* "wyx" - Sina Weiyouxi (Old style FB like, in-frame only, implemented)
+* "renren" - RenRen (OAuth2, implemented)
+
+Not implement yet:
+
+* "qq" - QZone/Pengyou
+* "fb" - Facebook
+* "google" - Google+
+* "kaixin" - Kaixin001
+
+Implemented but not suggest to use
+
+* "sina" - Weibo (OAuth, implemented, but lack of sns CommonAPI)
 
 # Dependence
 * Using node-oauth lib
 * The lib should be run on express framework(for session and router support)
 
 # How to use
-//TODO (now is in development, you can look at example first)
+
+## To create a SNS client
+	var snsclient = require('snsclient');
+	
+	var factory = snsclient({
+		platform_nameA : {key: key, secret: secret},
+		platform_nameB : {key: key, secret: secret}
+	});
+		
+	var client_nouser, client_withuser;
+	
+	client_nouser = factory.createClient('platform_nameA'); // for no authorized_user
+	
+	factory.setDefault('platform_nameA'); // set a default platform
+	client_nouser = factory.createClient(); // for no authorized_user and using default
+	
+	// set user and using default
+	// you can get authorized_user by snsClient's function "authorize()"
+	client_withuser = factory.createClient(authorized_user); 
+
+## To authorize
+_some authorization may be redirecting page_
+
+	// create a default client
+	var client = factory.createClient(), authorized_user;
+	client.authorize(req, res, function(err, user){
+		// if no err, user will be the authorized_user to be used in other CommonAPIs
+		authorized_user = user;
+	});
+	
+## Using commonAPIs
+	// create a default client with authorized_user
+	var client = factory.createClient(authorized_user);
+	client.friends_ids(null, /* you can set some API additional parameters here */
+	  function(err, data){
+	  //To handle data
+	});
+
 
 # CommonAPIs
 * ```acccount_info``` : get current user's info
