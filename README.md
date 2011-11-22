@@ -1,24 +1,21 @@
 # Multi-platform SNS Client for Node
 This is general SNS Client libs for most SNS platforms.
-Implemented:
+
+### Implemented:
 
 * "wyx" - Sina Weiyouxi (Old style FB like, in-frame only, implemented)
 * "renren" - RenRen (OAuth2, implemented)
 
-Not implement yet:
+### Not implement yet:
 
 * "qq" - QZone/Pengyou
 * "fb" - Facebook
 * "google" - Google+
 * "kaixin" - Kaixin001
 
-Implemented but not suggest to use
+### Implemented but not suggest to use
 
 * "sina" - Weibo (OAuth, implemented, but lack of sns CommonAPI)
-
-# Dependence
-* Using node-oauth lib
-* The lib should be run on express framework(for session and router support)
 
 # How to use
 
@@ -59,6 +56,9 @@ _some authorization may be redirecting page_
 	  //To handle data
 	});
 
+## Dependence
+* Using node-oauth lib
+* The lib should be run on express framework(for session and router support)
 
 # CommonAPIs
 * ```acccount_info``` : get current user's info
