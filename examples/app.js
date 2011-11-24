@@ -1,14 +1,30 @@
 /**
  * Module dependencies.
  */
-var express = require('express'),
-	snsclient = require('../');
+var express = require('express');
 
 var app = module.exports = express.createServer();
 
 var port = process.env.PORT || 3000;
-// Configuration
 
+// require snsclient and set sns app info
+var clientFactory = require('../')({
+	sina:{
+		key: '{your sina key}',
+		secret: '{your sina secret}',
+	},
+	wyx : {
+		key: '{your wyx key}',
+		secret: '{your wyx secret}',
+	},
+	renren : {
+		key: '{your renren key}',
+		secret: '{your renren secret}',
+	}
+});
+clientFactory.setDefault("renren");
+
+// Configuration
 app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
@@ -18,7 +34,7 @@ app.configure(function(){
   app.use(express.methodOverride());
 
   // Now middleware available
-  app.use(snsclient.middleware());
+  app.use(require('../').middleware(clientFactory));
 
   app.use(app.router);
 });	
@@ -32,26 +48,6 @@ app.configure('production', function(){
 });
 
 // Routes
-
-//set sns app info
-var appInfos = {
-	sina:{
-		type: 'sina',
-		key: '{your sina key}',
-		secret: '{your sina secret}',
-	},
-	wyx : {
-		type: 'wyx',
-		key: '{your wyx key}',
-		secret: '{your wyx secret}',
-	},
-	renren : {
-		type: 'renren',
-		key: '{your renren key}',
-		secret: '{your renren secret}',
-	}
-}
-snsclient.setDefaultAppinfo(appInfos.renren);
 
 /**
  * Query middleware
@@ -70,9 +66,9 @@ app.get('/', queryCheck, function(req, res, next){
 		client;
 	
 	if(req.snsInfo){
-		client = snsclient.createClient(appInfos[req.snsInfo.type]);
+		client = clientFactory.createClient(req.snsInfo.platform);
 	}else{
-		client = snsclient.createClient(); // using default
+		client = clientFactory.createClient(); // using default
 	}
 	client.authorize(req, res, function(err, user){
 		if(err) next(new Error(JSON.stringify(err) ));
@@ -92,8 +88,7 @@ function dataCheck(req, res, next){
 };
 app.get('/', dataCheck, function(req, res, next){
 	var user = req.session.authorized_data;
-	var type = user.platform;
-	var	client = snsclient.createClient(appInfos[type], user);
+	var	client = clientFactory.createClient(user.platform, user);
 	
 	client.friends_ids(null, function(err, data){
 		if(err) next(new Error(JSON.stringify(err) ));
