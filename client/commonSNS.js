@@ -3,7 +3,7 @@
  * @author Tang Bo Hao
  */
 
-require('./lib/renren-gc.js');
+require('./lib/renren.js');
 
 Renren.sendRequest = function(options){
   Renren.ui({
