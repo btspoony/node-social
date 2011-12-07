@@ -18,7 +18,8 @@ Renren.sendRequest = function(options){
   });
 }
 
-function WyxClient(){
+function WyxClient(appId){
+  this.appId = appId;
 }
 
 /**
@@ -47,7 +48,7 @@ WyxClient.prototype.genInviteHtml = function (options) {
   return [ '<div class="requestForm">'
   , '<form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target="friendSelector">'
   , '<input type="hidden" name="target" value="'       + ( options.target        || 'top') + '" />'
-  , '<input type="hidden" name="appId" value="'        + ( options.appId        || this.appId) + '" />'
+  , '<input type="hidden" name="appId" value="'        + ( options.appId         || this.appId) + '" />'
   , '<input type="hidden" name="modes" value="'        + ( options.modes         || 'all') + '" />'
   , '<input type="hidden" name="selectedMode" value="' + ( options.selector_mode || 'all') + '" />'
   , '<input type="hidden" name="action" value="'       + ( options.redirect_uri  || '') + '" />'
