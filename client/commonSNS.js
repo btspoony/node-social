@@ -47,7 +47,7 @@ WyxClient.prototype.genInviteHtml = function (options) {
   return [ '<div class="requestForm">'
   , '<form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target="friendSelector">'
   , '<input type="hidden" name="target" value="'       + ( options.target        || 'top') + '" />'
-  , '<input type="hidden" name="appId" value="'        + ( options.app_id        || this.app_id) + '" />'
+  , '<input type="hidden" name="appId" value="'        + ( options.appId        || this.appId) + '" />'
   , '<input type="hidden" name="modes" value="'        + ( options.modes         || 'all') + '" />'
   , '<input type="hidden" name="selectedMode" value="' + ( options.selector_mode || 'all') + '" />'
   , '<input type="hidden" name="action" value="'       + ( options.redirect_uri  || '') + '" />'
@@ -59,9 +59,6 @@ WyxClient.prototype.genInviteHtml = function (options) {
   , '<iframe width="' + (options.style && options.style.width || '600px') + '" height="' + (options.style && options.style.height || '460px') + '" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector">'
   , '</iframe>'
   , '</div>'
-  , '<script type="text/javascript">'
-  , 'function postForm(){'
-  , 'document.getElementById("createToolFriend").submit();}if(window.attachEvent){window.attachEvent("onload", postForm);}else if(window.addEventListener){window.addEventListener("load", postForm, false);}</script>'
   ].join('');
 
 }
@@ -74,6 +71,7 @@ WyxClient.prototype.sendRequest = function(options){
   var $html = $(html).hide();
   $("body").append($html);
   $html.modal();
+  document.getElementById("createToolFriend").submit();
 }
 
 exports.Renren = Renren;
