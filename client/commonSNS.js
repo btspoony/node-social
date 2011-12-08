@@ -13,8 +13,8 @@ Renren.sendRequest = function(options){
     , params : {
         accept_label: options.accept_label || '接受邀请'
       }
-    , onSuccess: options.onSuccess
-    , onFailure: options.onFailure
+    , onSuccess: options.onSuccess || function(r){}
+    , onFailure: options.onFailure || function(r){}
   });
 }
 
@@ -45,6 +45,9 @@ function WyxClient(appId){
  */
 WyxClient.prototype.genInviteHtml = function (options) {
   options = options || {};
+  if(!options.accept_url) {
+    return '<p style="width:400px">accept_url is required</p>'
+  }
   return [ '<div class="requestForm">'
   , '<form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target="friendSelector">'
   , '<input type="hidden" name="target" value="'       + ( options.target        || 'top') + '" />'
@@ -55,7 +58,7 @@ WyxClient.prototype.genInviteHtml = function (options) {
   , '<input type="hidden" name="excludedIds" value="'  + ( options.excluded_ids  || '') + '" />'
   , '<input type="hidden" name="pageSize" value="'     + ( options.page_size     || '12') + '" />'
   , '<input type="hidden" name="content" value="'      + ( options.actiontext    || '欢迎加入') + '" />'
-  , '<input type="hidden" name="callback" value="'     + ( options.accept_url    || this.url) + '" />'
+  , '<input type="hidden" name="callback" value="'     + ( options.accept_url ) + '" />'
   , '</form>'
   , '<iframe width="' + (options.style && options.style.width || '600px') + '" height="' + (options.style && options.style.height || '460px') + '" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector">'
   , '</iframe>'
