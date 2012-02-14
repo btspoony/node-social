@@ -19,10 +19,10 @@ This is general Social Client libs for most social network platforms.
 
 # How to use
 
-## To create a SNS client
-	var snsclient = require('snsclient');
+## To create a social client
+	var socialClient = require('social');
 	
-	var factory = snsclient({
+	var factory = socialClient({
 		platform_nameA : {key: key, secret: secret},
 		platform_nameB : {key: key, secret: secret}
 	});
