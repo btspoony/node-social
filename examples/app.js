@@ -7,7 +7,7 @@ var app = module.exports = express.createServer();
 
 var port = process.env.PORT || 3000;
 
-// require snsclient and set sns app info
+// require social and set sns app info
 var clientFactory = require('../')({
 	sina:{
 		key: '{your sina key}',
