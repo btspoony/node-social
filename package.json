@@ -1,9 +1,9 @@
 {
-  "name": "snsclient",
-  "version": "0.3.0",
-  "description": "Multi-platform SNS client for node",
+  "name": "social",
+  "version": "0.3.1",
+  "description": "Multi-platform Social Client for Node",
   "author": "Tang Bo Hao<btspoony@gmail.com> (http://blog.boisgames.com)",
-  "repository": { "type":"git", "url":"git://github.com/btspoony/node-snsclient.git"},
+  "repository": { "type":"git", "url":"git://github.com/btspoony/node-social.git"},
   "main": "index",
   "directories" : { "lib" : "./lib" },
   "contributors": [ 
@@ -12,6 +12,6 @@
   ],
   "dependencies": {
   },
-  "keywords": ["sdk", "facebook", "oauth", "oauth2", "restful", "sns", "snsclient"],
-  "engines": { "node": ">= 0.4.1" }
+  "keywords": ["sdk", "facebook", "oauth", "oauth2", "restful", "social"],
+  "engines": { "node": ">= 0.4.0" }
 }
