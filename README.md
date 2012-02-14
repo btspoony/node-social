@@ -1,14 +1,14 @@
-# Multi-platform SNS Client for Node
-This is general SNS Client libs for most SNS platforms.
+# Multi-platform Social Client for Node
+This is general Social Client libs for most social network platforms.
 
 ### Implemented:
 
 * "wyx" - Sina Weiyouxi (Old style FB like, in-frame only, implemented)
 * "renren" - RenRen (OAuth2, implemented)
+* "qq" - QZone/Pengyou
 
 ### Not implement yet:
 
-* "qq" - QZone/Pengyou
 * "fb" - Facebook
 * "google" - Google+
 * "kaixin" - Kaixin001
