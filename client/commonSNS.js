@@ -71,11 +71,14 @@ WyxClient.prototype.genInviteHtml = function (options) {
  * @param {Object} options
  */
 WyxClient.prototype.sendRequest = function(options){
-  var html = this.genInviteHtml(options);
-  var $html = $(html).hide();
-  $("body").append($html);
+  var $html = this.$html;
+  if(!$html) {
+    var html = this.genInviteHtml(options);
+    $html = this.$html = $(html).hide();
+    $("body").append($html);
+    document.getElementById("createToolFriend").submit();
+  }
   $html.modal();
-  document.getElementById("createToolFriend").submit();
 }
 
 exports.Renren = Renren;
