@@ -2,23 +2,23 @@
  * Client side common SNS Lib for multi-SNS platform project
  * @author Tang Bo Hao
  */
-
-require('./lib/renren.js');
-
-Renren.sendRequest = function(options){
-  Renren.ui({
-      url: 'request'
-    , display: 'iframe'
-    , style : {top: 100, left: 100, right: 100, bottom: 100}
-    , params : {
-        accept_label: options.accept_label || '接受邀请'
-      }
-    , onSuccess: options.onSuccess || function(r){}
-    , onFailure: options.onFailure || function(r){}
-  });
+if(Renren) {
+  exports.Renren = Renren;
+  Renren.sendRequest = function(options){
+    Renren.ui({
+        url: 'request'
+      , display: 'iframe'
+      , style : {top: 100, left: 100, right: 100, bottom: 100}
+      , params : {
+          accept_label: options.accept_label || '接受邀请'
+        }
+      , onSuccess: options.onSuccess || function(r){}
+      , onFailure: options.onFailure || function(r){}
+    });
+  }
 }
 
-function WyxClient(appId){
+var WYX = exports.WYX = function (appId){
   this.appId = appId;
 }
 
@@ -43,7 +43,7 @@ function WyxClient(appId){
  *    style.height:
  *
  */
-WyxClient.prototype.genInviteHtml = function (options) {
+WYX.prototype.genInviteHtml = function (options) {
   options = options || {};
   if(!options.accept_url) {
     return '<p style="width:400px">accept_url is required</p>'
@@ -70,7 +70,7 @@ WyxClient.prototype.genInviteHtml = function (options) {
 /**
  * @param {Object} options
  */
-WyxClient.prototype.sendRequest = function(options){
+WYX.prototype.sendRequest = function(options){
   var $html = this.$html;
   if(!$html) {
     var html = this.genInviteHtml(options);
@@ -81,5 +81,47 @@ WyxClient.prototype.sendRequest = function(options){
   $html.modal();
 }
 
-exports.Renren = Renren;
-exports.WyxClient = WyxClient;
+var QQ = {
+    sendRequest : function(options) {
+      fusion2.dialog.invite
+      ({
+
+          // 可选，微博平台不可使用该参数。邀请理由，最长不超过35个字符。若不传则默认在弹框中显示"这个应用不错哦，跟我一起玩吧！"
+          msg  :"邀请你来玩~",
+
+          // 可选，微博平台不可使用该参数。
+          //邀请配图的URL，图片尺寸最大不超过120*120 px。若不传则默认在弹框中显示应用的icon
+          // hosting应用要求将图片存放在APP域名下或腾讯CDN
+          // non-hosting应用要求将图片上传到该应用开发者QQ号对应的QQ空间加密相册中。
+          img :"http://qzonestyle.gtimg.cn/qzonestyle/act/qzone_app_img/app353_353_75.png",
+
+          // 可选。透传参数，用于onSuccess回调时传入的参数，用于识别请求
+          context :"invite",
+
+          // 可选。用户操作后的回调方法。
+          onSuccess : function (opt) {  alert("邀请成功" + opt.context); },
+
+          // 可选。用户取消操作后的回调方法。
+          onCancel : function () { alert("邀请取消"); },
+
+          // 可选。对话框关闭时的回调方法。
+          onClose : function () {  alert("邀请关闭"); }
+
+      });
+    }
+  , invite : fusion2.dialog.invite
+  , share : fusion2.dialog.share
+  , sendStory : fusion2.dialog.sendStory
+}
+
+exports.createClient = function(platform, appId) {
+  switch(platform) {
+  case 'wyx':
+    return new WYX(appId);
+  case 'renren':
+    Renren.init({appId: appId});
+    return Renren;
+  case 'qq':
+    return QQ;
+  }
+};
