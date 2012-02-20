@@ -8,7 +8,7 @@
 var social = exports.social = {};
 
 function makeUrl(url, param) {
-  return url + (url.indexOf('?') >= 0 ? '&' : '?') + options.param;
+  return url + (url.indexOf('?') >= 0 ? '&' : '?') + param;
 }
 
 social.Renren = {
@@ -92,103 +92,103 @@ social.Renren = {
 }
 
 social.WYX = {
-  init : function(appinfo) {
-    WYX.Connect.init();
-    this.appinfo = appinfo;
-  }
-, authorize : function(redirect_uri, callback) {
-    if(callback) callback();
+    init : function(appinfo) {
+      WYX.Connect.init();
+      this.appinfo = appinfo;
+    }
+  , authorize : function(redirect_uri, callback) {
+      if(callback) callback();
+    }
+
+  /**
+   * see http://wiki.dev.renren.com/wiki/Request_dialog for more information
+   *
+   * @param {Object} options
+   *
+   * required:
+   *    redirect_uri:
+   *    accept_url:
+   *    actiontext
+   *
+   * optional:
+   *    target : top, self
+   *    modes : all,af,naf,wyxf // af - app friend, naf - non app friend, wyxf - wyx friend
+   *    selectedMode: all, af, naf, wyxf
+   *    pageSize:
+   *    excluded_ids:
+   *    style.width:
+   *    style.height:
+   *
+   */
+  , genInviteHtml : function (options) {
+    options = options || {};
+    var url = this.appinfo.url;
+    if(!url) {
+      return '<p style="width:400px">accept_url is required</p>'
+    }
+    url = makeUrl(url, options.param);
+    return [ '<div class="requestForm">'
+    , '<form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target="friendSelector">'
+    , '<input type="hidden" name="target" value="'       + ( options.target        || 'top') + '" />'
+    , '<input type="hidden" name="appId" value="'        + ( this.appinfo.key) + '" />'
+    , '<input type="hidden" name="modes" value="'        + ( options.modes         || 'all') + '" />'
+    , '<input type="hidden" name="selectedMode" value="' + ( options.selector_mode || 'all') + '" />'
+    , '<input type="hidden" name="action" value="'       + ( options.redirect_uri  || '') + '" />'
+    , '<input type="hidden" name="excludedIds" value="'  + ( options.excluded_ids  || '') + '" />'
+    , '<input type="hidden" name="pageSize" value="'     + ( options.page_size     || '12') + '" />'
+    , '<input type="hidden" name="content" value="'      + ( options.msg || '欢迎加入') + '" />'
+    , '<input type="hidden" name="callback" value="'     + ( url ) + '" />'
+    , '</form>'
+    , '<iframe width="' + (options.style && options.style.width || '600px') + '" height="' + (options.style && options.style.height || '460px') + '" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector">'
+    , '</iframe>'
+    , '</div>'
+    ].join('');
+
   }
 
-/**
- * see http://wiki.dev.renren.com/wiki/Request_dialog for more information
- *
- * @param {Object} options
- *
- * required:
- *    redirect_uri:
- *    accept_url:
- *    actiontext
- *
- * optional:
- *    target : top, self
- *    modes : all,af,naf,wyxf // af - app friend, naf - non app friend, wyxf - wyx friend
- *    selectedMode: all, af, naf, wyxf
- *    pageSize:
- *    excluded_ids:
- *    style.width:
- *    style.height:
- *
- */
-, genInviteHtml : function (options) {
-  options = options || {};
-  var url = this.appinfo.url;
-  if(!url) {
-    return '<p style="width:400px">accept_url is required</p>'
+  /**
+   * @param {Object} options
+   *    msg, param
+   */
+  , invite : function(options){
+    var $html = this.$html;
+    if(!$html) {
+      var html = this.genInviteHtml(options);
+      $html = this.$html = $(html).hide();
+      $("body").append($html);
+      document.getElementById("createToolFriend").submit();
+    }
+    $html.modal();
   }
-  url = makeUrl(url, options.param);
-  return [ '<div class="requestForm">'
-  , '<form method="post" action="http://game.weibo.com/home/widget/requestForm" id="createToolFriend" target="friendSelector">'
-  , '<input type="hidden" name="target" value="'       + ( options.target        || 'top') + '" />'
-  , '<input type="hidden" name="appId" value="'        + ( this.appinfo.id) + '" />'
-  , '<input type="hidden" name="modes" value="'        + ( options.modes         || 'all') + '" />'
-  , '<input type="hidden" name="selectedMode" value="' + ( options.selector_mode || 'all') + '" />'
-  , '<input type="hidden" name="action" value="'       + ( options.redirect_uri  || '') + '" />'
-  , '<input type="hidden" name="excludedIds" value="'  + ( options.excluded_ids  || '') + '" />'
-  , '<input type="hidden" name="pageSize" value="'     + ( options.page_size     || '12') + '" />'
-  , '<input type="hidden" name="content" value="'      + ( options.msg || '欢迎加入') + '" />'
-  , '<input type="hidden" name="callback" value="'     + ( url ) + '" />'
-  , '</form>'
-  , '<iframe width="' + (options.style && options.style.width || '600px') + '" height="' + (options.style && options.style.height || '460px') + '" frameborder="0" src="" name="friendSelector" scrolling="no" id="friendSelector">'
-  , '</iframe>'
-  , '</div>'
-  ].join('');
+  /**
+   * @param options
+   *  title
+   *  summary
+   *  msg
+   *  img
+   *  button
+   *  param
+   */
+  , share : function (options, callback) {
+      var uiOpts = {
+        method:'sendWeibo',
+        params:{
+          appId: this.appinfo.id,
+          title: options.title,
+          content: options.summary,
+          templateContent: options.msg,
+          actionText: options.button,
+          imageUrl: options.img
+        }
+      };
+      var url = makeUrl(this.appinfo.url, options.param);
+      uiOpts.link = uiOpts.actionUrl = url;
+      WYX.Connect.send(uiOpts, callback);
+    }
 
 }
 
-/**
- * @param {Object} options
- *    msg, param
- */
-, invite : function(options){
-  var $html = this.$html;
-  if(!$html) {
-    var html = this.genInviteHtml(options);
-    $html = this.$html = $(html).hide();
-    $("body").append($html);
-    document.getElementById("createToolFriend").submit();
-  }
-  $html.modal();
-}
-/**
- * @param options
- *  title
- *  summary
- *  msg
- *  img
- *  button
- *  param
- */
-, share : function (options, callback) {
-    var uiOpts = {
-      method:'sendWeibo',
-      params:{
-        appId: this.appinfo.id,
-        title: options.title,
-        content: options.summary,
-        templateContent: options.msg,
-        actionText: options.button,
-        imageUrl: options.img
-      }
-    };
-    var url = makeUrl(this.appinfo.url, options.param);
-    uiOpts.link = uiOpts.actionUrl = url;
-    WYX.Connect.send(uiOpts, callback);
-  }
-
-}
-
-var QQ = {
+social.QQ = {
     init : function (appinfo) {
       this.appinfo = appinfo;
     }
