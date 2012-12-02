@@ -1,6 +1,6 @@
 {
   "name": "social",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Multi-platform Social Client for Node",
   "author": "Tang Bo Hao<btspoony@gmail.com> (http://blog.boisgames.com)",
   "repository": { "type":"git", "url":"git://github.com/btspoony/node-social.git"},
@@ -11,7 +11,8 @@
     { "name": "Gui Lin", "email": "guileen@gmail.com" }
   ],
   "dependencies": {
+    "oauth":">=0.9.8"
   },
   "keywords": ["sdk", "facebook", "oauth", "oauth2", "restful", "social"],
-  "engines": { "node": ">= 0.4.0" }
+  "engines": { "node": ">= 0.6.0" }
 }

@@ -10,8 +10,6 @@ This is general Social Client libs for most social network platforms.
 ### Not implement yet:
 
 * "fb" - Facebook
-* "google" - Google+
-* "kaixin" - Kaixin001
 
 ### Implemented but not suggest to use
 
