@@ -7,12 +7,7 @@
 
 var social = exports.social = {};
 
-function makeUrl(url, param) {
-  return url + (url.indexOf('?') >= 0 ? '&' : '?') + param;
-}
-
 var appInfo;
-
 /**
  * @param options
  *    platform
@@ -29,16 +24,8 @@ social.init = function(initOpt) {
  *    msg, img
  */
 social.invite = function(options, callback) {
-  var uiOpts = {
-    msg : options.msg
-  , img : options.img
-  }
-  if(callback) {
-    uiOpts.onSuccess = callback;
-    // uiOpts.onCancel
-    // uiOpts.onClose
-  }
-  fusion2.dialog.invite(uiOpts);
+  options.onSuccess = options.onSuccess || callback;
+  fusion2.dialog.invite(options);
 }
 
 /**
@@ -54,11 +41,18 @@ social.invite = function(options, callback) {
           // 1.进入应用 2.领取奖励 3. 获取能量 4.帮助TA。
  */
 social.share = function(options, callback) {
-  if(!options.button) {
-    options.button = '进入应用';
-  }
-  options.onSuccess = callback;
+  options.onSuccess = options.onSuccess || callback;
   fusion2.dialog.sendStory(options);
+}
+
+/**
+ * @param  {Object}   options  
+ *         disturb - true
+ *         param - url_param
+ */
+social.buy = function(options, callback){
+  options.onSuccess = options.onSuccess || callback;
+  fusion2.dialog.buy(options);
 }
 
 social.authorize = function(redirect_uri, callback) {

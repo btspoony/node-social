@@ -1,6 +1,6 @@
 {
   "name": "social",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Multi-platform Social Client for Node",
   "author": "Tang Bo Hao<btspoony@gmail.com> (http://blog.boisgames.com)",
   "repository": { "type":"git", "url":"git://github.com/btspoony/node-social.git"},

@@ -54,6 +54,41 @@ To support all platform , user's social information structure will be converted 
 
 And other special data for defferent platform will be still in the object
 
+# How to use QQ Payment
+
+## Step 1 Send Payment Request
+start a payment request
+
+	var client = factory.createClient( snsInfo ); // snsInfo can be stored in session, and using in each req
+	client.payment_request( param // "param" refer to http://wiki.open.qq.com/wiki/v3/pay/buy_goods
+	  , functino(err, data){
+	  	/** importent parameter in data:
+	  	 *	token:		payment token id
+	  	 *	url_params: will using in frontend
+	  	 */
+	  });
+
+## Step 2 FrontEnd JS Call
+Using social's common client JS or QQ's fusion2.dialog.buy // refer to http://wiki.open.qq.com/wiki/fusion2.dialog.buy.
+In this step, player will send payment request to QQ platform.
+
+## Step 3 Platform Callback and onfirm payment
+After step 2, QQ platform will request to your callback url
+	
+	// QQ's request without user's snsinfo, but query including user's openid, you can get sns info from DB
+	var client = factory.createClient( "qq" ); // you also can create social client with string
+	// if you can get user's sns info, pls create client by snsInfo
+	client.payment_callback(req, res // express's req and res
+	 , function onSuccess(callback) {
+    	// this function will be called when "sig" checking succeeded
+    }
+    , function onFail(callback) {
+    	// this function will be called when "sig" checking failed
+    })
+    , function onDelivery(err, data){ // Optional
+    	// if you create client with sns info, this function will be called when delivery finished
+    });
+
 # CommonAPIs
 * ```acccount_info``` : get current user's info
 	* support: _all_
