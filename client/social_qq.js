@@ -13,20 +13,33 @@ social.init = function(initOpt) {
 };
 
 social.invite = function(options, callback) {
+  options = options || {};
   if( callback ) 
     options.onSuccess = options.onSuccess || callback;
   fusion2.dialog.invite(options);
 }
 
 social.share = function(options, callback) {
+  options = options || {};
   if( callback ) 
     options.onSuccess = options.onSuccess || callback;
   fusion2.dialog.sendStory(options);
 }
 
 social.buy = function(options, callback){
+  options = options || {};
+  if( callback ) 
+    options.onSuccess = options.onSuccess || callback;
   options.sandbox = sandbox;
   fusion2.dialog.buy(options);
+}
+
+social.invoke = function(name, options, callback){
+  options = options || {};
+  if( callback ) 
+    options.onSuccess = options.onSuccess || callback;
+  options.sandbox = sandbox;
+  fusion2.dialog[name](options);
 }
 
 social.checkBalance = function( callback ) {
